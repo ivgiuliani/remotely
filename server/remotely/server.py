@@ -95,7 +95,9 @@ class RemotelyServer(object):
         return True
 
     def execute_command(self, command):
-        if command["name"] == "vol_up":
+        if command["name"] == "announce":
+            log.debug("Received announce message")
+        elif command["name"] == "vol_up":
             self.control.keypress("XF86AudioRaiseVolume")
         elif command["name"] == "vol_down":
             self.control.keypress("XF86AudioLowerVolume")
