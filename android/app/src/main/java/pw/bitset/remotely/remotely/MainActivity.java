@@ -1,5 +1,6 @@
 package pw.bitset.remotely.remotely;
 
+import android.os.Vibrator;
 import android.support.annotation.WorkerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    private static final long NUDGE_DURATION_MS = 40;
+
     private Executor threadExecutor = Executors.newSingleThreadExecutor();
 
     private ImageButton buttonVolumeDown;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             final String command = (String) v.getTag(R.integer.key_command);
             sendCommand(command);
+            nudge();
         }
     };
 
@@ -91,5 +95,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void nudge() {
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(NUDGE_DURATION_MS);
+        }
     }
 }
