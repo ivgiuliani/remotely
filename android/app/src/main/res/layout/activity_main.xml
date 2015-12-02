@@ -11,51 +11,52 @@
     android:orientation="vertical"
     tools:context="pw.bitset.remotely.remotely.MainActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal"
         android:padding="16dp">
 
         <ImageButton
             android:id="@+id/btn_volume_down"
             android:src="@drawable/ic_volume_down_black_48dp"
             android:contentDescription="@string/button_vol_down"
+            android:layout_alignParentStart="true"
             style="@style/ControlButton" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_volume_mute"
+                android:src="@drawable/ic_volume_off_black_48dp"
+                android:contentDescription="@string/button_vol_mute"
+                style="@style/ControlButton" />
+
+            <ImageButton
+                android:id="@+id/btn_volume_play"
+                android:src="@drawable/ic_play_arrow_black_48dp"
+                android:contentDescription="@string/button_mm_play"
+                style="@style/ControlButton" />
+
+            <ImageButton
+                android:id="@+id/btn_volume_pause"
+                android:src="@drawable/ic_pause_black_48dp"
+                android:contentDescription="@string/button_mm_pause"
+                style="@style/ControlButton" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/btn_volume_up"
             android:src="@drawable/ic_volume_up_black_48dp"
             android:contentDescription="@string/button_vol_up"
+            android:layout_alignParentEnd="true"
             style="@style/ControlButton" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <ImageButton
-            android:id="@+id/btn_volume_mute"
-            android:src="@drawable/ic_volume_off_black_48dp"
-            android:contentDescription="@string/button_vol_mute"
-            style="@style/ControlButton" />
-
-        <ImageButton
-            android:id="@+id/btn_volume_play"
-            android:src="@drawable/ic_play_arrow_black_48dp"
-            android:contentDescription="@string/button_mm_play"
-            style="@style/ControlButton" />
-
-        <ImageButton
-            android:id="@+id/btn_volume_pause"
-            android:src="@drawable/ic_pause_black_48dp"
-            android:contentDescription="@string/button_mm_pause"
-            style="@style/ControlButton" />
-
-    </LinearLayout>
 </LinearLayout>
