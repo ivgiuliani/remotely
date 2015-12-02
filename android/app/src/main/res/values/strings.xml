@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Remotely</string>
+
+    <string name="button_vol_up">Volume up</string>
+    <string name="button_vol_down">Volume down</string>
+    <string name="button_vol_mute">Mute</string>
+    <string name="button_mm_play">Play</string>
+    <string name="button_mm_pause">Pause</string>
 </resources>
