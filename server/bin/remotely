@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python -c "from remotely import server; server.start_default()"
