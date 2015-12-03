@@ -1,8 +1,9 @@
-package pw.bitset.remotely.remotely;
+package pw.bitset.remotely.remotely.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Vibrator;
 import android.support.annotation.WorkerThread;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,8 +19,13 @@ import java.net.InetAddress;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+import pw.bitset.remotely.remotely.R;
+
+public class ControlActivity extends Activity {
+    private static final String TAG = "ControlActivity";
+
+    private static final String INTENT_KEY_HOST = "intent_key_host";
+    private static final String INTENT_KEY_PORT = "intent_key_port";
 
     private static final long NUDGE_DURATION_MS = 40;
 
@@ -30,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton buttonVolumeMute;
     private ImageButton buttonPlay;
     private ImageButton buttonPause;
+
+    private String currentHost;
+    private int currentPort;
 
     private View.OnClickListener commandClickListener = new View.OnClickListener() {
         @Override
@@ -44,6 +53,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        currentHost = intent.getStringExtra(INTENT_KEY_HOST);
+        if (currentHost == null) {
+            Log.e(TAG, "Expected host.");
+            finish();
+        }
+        currentPort = intent.getIntExtra(INTENT_KEY_PORT, 0);
+        if (currentPort <= 0) {
+            Log.e(TAG, "Expected port.");
+            finish();
+        }
 
         buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
         buttonVolumeUp = (ImageButton) findViewById(R.id.btn_volume_up);
@@ -65,13 +86,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @WorkerThread
-    private void sendData(String data) throws IOException {
+    private void sendData(String host, int port, String data) throws IOException {
         Log.v(TAG, "Sending " + data);
 
-        DatagramSocket client_socket = new DatagramSocket(5051);
-        InetAddress IPAddress =  InetAddress.getByName("192.168.1.84");
+        DatagramSocket client_socket = new DatagramSocket(port);
+        InetAddress IPAddress =  InetAddress.getByName(host);
 
-        DatagramPacket send_packet = new DatagramPacket(data.getBytes(), data.length(), IPAddress, 5051);
+        DatagramPacket send_packet = new DatagramPacket(data.getBytes(), data.length(), IPAddress, port);
         client_socket.send(send_packet);
         client_socket.close();
     }
@@ -89,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    sendData(obj.toString());
+                    sendData(currentHost, currentPort, obj.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -102,5 +123,12 @@ public class MainActivity extends AppCompatActivity {
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(NUDGE_DURATION_MS);
         }
+    }
+
+    static void show(Activity parentActivity, String host, int port) {
+        Intent intent = new Intent(parentActivity, ControlActivity.class);
+        intent.putExtra(INTENT_KEY_HOST, host);
+        intent.putExtra(INTENT_KEY_PORT, port);
+        parentActivity.startActivity(intent);
     }
 }
