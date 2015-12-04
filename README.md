@@ -1,4 +1,4 @@
 Remotely
 ========
 
-Send keyboard events to your computer from Android.
+Control your computer from Android.
