@@ -73,10 +73,7 @@ class RemotelyServer(object):
         return True
 
     def execute_command(self, from_addr, command):
-        if command["name"] == "ping":
-            log.debug("Received ping message")
-            self.pong(from_addr)
-        elif command["name"] == "vol_up":
+        if command["name"] == "vol_up":
             self.control.keypress("XF86AudioRaiseVolume")
         elif command["name"] == "vol_down":
             self.control.keypress("XF86AudioLowerVolume")
@@ -86,9 +83,6 @@ class RemotelyServer(object):
             self.control.keypress("XF86AudioPlay")
         elif command["name"] == "mm_pause":
             self.control.keypress("XF86AudioPause")
-
-    def pong(self, from_addr):
-        self.socket.sendto("pong", from_addr)
 
 
 def zeroconf_register(zc, ip, port):
