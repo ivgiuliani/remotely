@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python -c "from remotely import server; server.start_default()"
+env PYTHONPATH="." \
+  python remotely/server.py $*

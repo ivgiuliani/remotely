@@ -2,7 +2,8 @@ import logging
 import sys
 import socket
 import json
-import threading
+
+from zeroconf import ServiceInfo, Zeroconf
 
 from remotely import control
 
@@ -88,18 +89,44 @@ class RemotelyServer(object):
 
     def pong(self, from_addr):
         self.socket.sendto("pong", from_addr)
-1
+
+
+def zeroconf_register(zc, ip, port):
+    properties = {}
+    zc_info = ServiceInfo(
+        "_http._tcp.local.", "Remotely._http._tcp.local.",
+        socket.inet_aton(ip), port, 0, 0, properties
+    )
+    zc.register_service(zc_info)
+    return zc_info
+
+
+def zeroconf_unregister(zc, zc_info):
+    zc.unregister_service(zc_info)
+    zc.close()
+
 
 def main(args):
     logging.basicConfig(level=logging.INFO)
 
-    ip = args[0]
-    port = int(args[1])
+    try:
+        ip = args[1]
+    except IndexError:
+        ip = DEFAULT_SERVER_IFACE
 
+    try:
+        port = int(args[2])
+    except IndexError:
+        port = DEFAULT_SERVER_PORT
+
+    zeroconf = Zeroconf()
     server = RemotelyServer(ip, port, control=control.LinuxControl())
+    zc_info = zeroconf_register(zeroconf, ip, port)
+
     try:
         server.listen()
     except KeyboardInterrupt:
+        zeroconf_unregister(zeroconf, zc_info)
         log.info("Caught ^C, exiting.")
 
     return False
