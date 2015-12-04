@@ -1,4 +1,4 @@
-package pw.bitset.remotely.remotely.activity;
+package pw.bitset.remotely.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import java.net.InetAddress;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import pw.bitset.remotely.remotely.R;
+import pw.bitset.remotely.R;
 
 public class ControlActivity extends Activity {
     private static final String TAG = "ControlActivity";

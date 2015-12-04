@@ -1,4 +1,4 @@
-package pw.bitset.remotely.remotely.activity;
+package pw.bitset.remotely.activity;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -19,8 +19,8 @@ import android.widget.ListView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import pw.bitset.remotely.remotely.R;
-import pw.bitset.remotely.remotely.data.Service;
+import pw.bitset.remotely.R;
+import pw.bitset.remotely.data.Service;
 
 public class DiscoveryActivity extends Activity {
     private static final String TAG = "DiscoveryActivity";
