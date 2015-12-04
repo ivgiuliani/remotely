@@ -1,4 +1,4 @@
-package pw.bitset.remotely.remotely;
+package pw.bitset.remotely;
 
 import android.content.Context;
 import android.graphics.Canvas;

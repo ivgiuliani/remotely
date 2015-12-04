@@ -1,4 +1,4 @@
-package pw.bitset.remotely.remotely.data;
+package pw.bitset.remotely.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
