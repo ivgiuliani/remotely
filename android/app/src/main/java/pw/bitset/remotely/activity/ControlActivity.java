@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Vibrator;
 import android.support.annotation.WorkerThread;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -60,6 +61,9 @@ public class ControlActivity extends Activity {
             finish();
             return;
         }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(service.name);
 
         buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
         buttonVolumeUp = (ImageButton) findViewById(R.id.btn_volume_up);
