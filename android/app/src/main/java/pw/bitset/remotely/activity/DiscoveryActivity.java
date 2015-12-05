@@ -64,7 +64,7 @@ public class DiscoveryActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Service service = hostListAdapter.getItem(position);
-                ControlActivity.show(DiscoveryActivity.this, service.host, service.port);
+                ControlActivity.show(DiscoveryActivity.this, service);
             }
         });
 

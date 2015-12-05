@@ -20,12 +20,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import pw.bitset.remotely.R;
+import pw.bitset.remotely.data.Service;
 
 public class ControlActivity extends Activity {
     private static final String TAG = "ControlActivity";
 
-    private static final String INTENT_KEY_HOST = "intent_key_host";
-    private static final String INTENT_KEY_PORT = "intent_key_port";
+    private static final String INTENT_KEY_SERVICE = "intent_key_service";
 
     private static final long NUDGE_DURATION_MS = 40;
 
@@ -37,8 +37,7 @@ public class ControlActivity extends Activity {
     private ImageButton buttonPlay;
     private ImageButton buttonPause;
 
-    private String currentHost;
-    private int currentPort;
+    private Service service;
 
     private View.OnClickListener commandClickListener = new View.OnClickListener() {
         @Override
@@ -55,15 +54,11 @@ public class ControlActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        currentHost = intent.getStringExtra(INTENT_KEY_HOST);
-        if (currentHost == null) {
-            Log.e(TAG, "Expected host.");
+        service = intent.getParcelableExtra(INTENT_KEY_SERVICE);
+        if (service == null) {
+            Log.e(TAG, "Expected service.");
             finish();
-        }
-        currentPort = intent.getIntExtra(INTENT_KEY_PORT, 0);
-        if (currentPort <= 0) {
-            Log.e(TAG, "Expected port.");
-            finish();
+            return;
         }
 
         buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
@@ -110,7 +105,7 @@ public class ControlActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    sendData(currentHost, currentPort, obj.toString());
+                    sendData(service.host, service.port, obj.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -125,10 +120,9 @@ public class ControlActivity extends Activity {
         }
     }
 
-    static void show(Activity parentActivity, String host, int port) {
+    static void show(Activity parentActivity, Service service) {
         Intent intent = new Intent(parentActivity, ControlActivity.class);
-        intent.putExtra(INTENT_KEY_HOST, host);
-        intent.putExtra(INTENT_KEY_PORT, port);
+        intent.putExtra(INTENT_KEY_SERVICE, service);
         parentActivity.startActivity(intent);
     }
 }
