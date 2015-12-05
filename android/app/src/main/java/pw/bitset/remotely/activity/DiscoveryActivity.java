@@ -8,13 +8,17 @@ import android.content.IntentFilter;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.StringDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,7 +37,7 @@ public class DiscoveryActivity extends Activity {
     private static final String BROADCAST_INTENT_SERVICE_ADD = "service_add";
     private static final String BROADCAST_INTENT_SERVICE_DELETE = "service_delete";
 
-    private ArrayAdapter<Service> hostListAdapter;
+    private ServicesAdapter hostListAdapter;
     private NsdManager nsdManager;
     private NsdManager.DiscoveryListener discoveryListener;
 
@@ -52,7 +56,7 @@ public class DiscoveryActivity extends Activity {
 
         nsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
 
-        hostListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        hostListAdapter = new ServicesAdapter(this, R.layout.vh_device_view);
 
         ListView hostList = (ListView) findViewById(R.id.lst_hosts);
         hostList.setAdapter(hostListAdapter);
@@ -88,6 +92,46 @@ public class DiscoveryActivity extends Activity {
         intent.putExtra("service", service);
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    private static class ServicesAdapter extends ArrayAdapter<Service> {
+        private LayoutInflater inflater;
+        @LayoutRes private int resource;
+
+        public ServicesAdapter(Context context, @LayoutRes int resource) {
+            super(context, resource);
+
+            this.resource = resource;
+            this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return createViewFromResource(inflater, position, convertView, parent, resource);
+        }
+
+        private View createViewFromResource(LayoutInflater inflater,
+                                            int position,
+                                            View convertView,
+                                            ViewGroup parent,
+                                            @LayoutRes int resource) {
+            View view;
+            Service service = getItem(position);
+
+            if (convertView == null) {
+                view = inflater.inflate(resource, parent, false);
+            } else {
+                view = convertView;
+            }
+
+            TextView header = (TextView) view.findViewById(R.id.txt_header);
+            TextView sub = (TextView) view.findViewById(R.id.txt_sub);
+
+            header.setText(service.name);
+            sub.setText(String.format("%s:%d", service.host, service.port));
+
+            return view;
+        }
     }
 
     private class HostEventReceiver extends BroadcastReceiver {

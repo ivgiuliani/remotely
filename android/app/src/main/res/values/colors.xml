@@ -4,5 +4,8 @@
     <color name="colorPrimaryDark">#324878</color>
     <color name="colorAccent">#ff7563</color>
 
+    <color name="textPrimary">#303030</color>
+    <color name="textSecondary">#808080</color>
+
     <color name="toolbarTextColor">@color/colorAccent</color>
 </resources>
