@@ -7,5 +7,7 @@
     <color name="textPrimary">#303030</color>
     <color name="textSecondary">#808080</color>
 
+    <color name="trackpadBackground">#414754</color>
+
     <color name="toolbarTextColor">@color/colorAccent</color>
 </resources>
