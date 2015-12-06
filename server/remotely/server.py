@@ -20,7 +20,7 @@ app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(Media, "/media/<command>")
-api.add_resource(Keyboard, "/keyboard/<key>")
+api.add_resource(Keyboard, "/keyboard/press")
 api.add_resource(Mouse, "/mouse/<command>")
 
 

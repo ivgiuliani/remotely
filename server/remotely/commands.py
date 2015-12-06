@@ -44,8 +44,21 @@ class Media(BaseCommandResource):
 
 class Keyboard(BaseCommandResource):
     @accept_json_only
-    def post(self, key):
-        self.control.keypress(key)
+    def post(self):
+        argparser = reqparse.RequestParser()
+        argparser.add_argument("keycode", type=int, required=True)
+
+        args = argparser.parse_args()
+        char = chr(args.keycode)
+
+        # There's probably no harm in adding all those supported.
+        charmap = {
+            '\x08': "BackSpace",
+            '\t': "Tab",
+            '\n': "Return"
+        }
+
+        self.control.keypress(charmap.get(char, char))
 
 
 class Mouse(BaseCommandResource):

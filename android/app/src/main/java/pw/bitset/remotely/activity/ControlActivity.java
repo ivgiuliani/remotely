@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 
 import pw.bitset.remotely.R;
 import pw.bitset.remotely.api.DeltaCoordinates;
+import pw.bitset.remotely.api.Keycode;
 import pw.bitset.remotely.api.RemotelyService;
 import pw.bitset.remotely.data.Service;
 import pw.bitset.remotely.trackpad.TrackpadListener;
@@ -145,13 +146,33 @@ public class ControlActivity extends Activity {
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            char pressedKey = event.getDisplayLabel();
-
-            if (pressedKey == 0 || event.getAction() != KeyEvent.ACTION_UP) {
-                return true;
+            if (event.getAction() != KeyEvent.ACTION_UP) {
+                return false;
             }
 
-            api.keyboardPress(pressedKey).enqueue(FIRE_AND_FORGET_REQUEST);
+            // The keycode we receive is an internal android representation of the keycode, *not*
+            // the ASCII equivalent (which might not even exist).
+            int finalKeyCode;
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DEL:
+                    finalKeyCode = '\b';
+                    break;
+                case KeyEvent.KEYCODE_TAB:
+                    finalKeyCode = '\t';
+                    break;
+                case KeyEvent.KEYCODE_ENTER:
+                    finalKeyCode = '\n';
+                    break;
+                default:
+                    finalKeyCode = event.getUnicodeChar(event.getMetaState());
+                    break;
+            }
+
+            if (keyCode <= 0 || keyCode > 255) {
+                return false;
+            }
+
+            api.keyboardPress(new Keycode(finalKeyCode)).enqueue(FIRE_AND_FORGET_REQUEST);
 
             return true;
         }
@@ -163,7 +184,7 @@ public class ControlActivity extends Activity {
 
             InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             rootView.requestFocus();
-            im.showSoftInput(rootView, InputMethodManager.SHOW_FORCED);
+            im.showSoftInput(rootView, InputMethodManager.SHOW_IMPLICIT);
 
             rootView.setOnKeyListener(this);
         }
