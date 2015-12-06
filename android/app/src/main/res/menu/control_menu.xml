@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/menu_show_keyboard"
-        android:icon="@drawable/ic_keyboard_hide_white_48dp"
+        android:icon="@drawable/ic_keyboard_hide_white_36dp"
         app:showAsAction="always"
         android:title="@string/show_keyboard" />
 
