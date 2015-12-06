@@ -30,4 +30,3 @@ class LinuxControl(object):
         log.debug("Mouse click")
         sequence = "mouseclick 1\n"
         self.__xte(sequence)
-
