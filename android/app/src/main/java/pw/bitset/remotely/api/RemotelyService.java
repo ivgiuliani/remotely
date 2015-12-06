@@ -4,6 +4,7 @@ import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Path;
 
 public interface RemotelyService {
     String CONTENT_TYPE_JSON = "Content-Type: application/json";
@@ -28,6 +29,11 @@ public interface RemotelyService {
     @POST("/media/pause")
     @Headers(CONTENT_TYPE_JSON)
     Call<Void> mediaPause();
+
+    // Keyboard endpoints.
+    @POST("/keyboard/{key}")
+    @Headers(CONTENT_TYPE_JSON)
+    Call<Void> keyboardPress(@Path("key") char key);
 
     // Mouse endpoints.
     @POST("/mouse/move")
