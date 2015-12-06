@@ -44,7 +44,7 @@ public class ControlActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_control);
 
         Intent intent = getIntent();
         service = intent.getParcelableExtra(INTENT_KEY_SERVICE);
