@@ -29,6 +29,11 @@ public interface RemotelyService {
     @Headers(CONTENT_TYPE_JSON)
     Call<Void> mediaPause();
 
+    // Keyboard endpoints.
+    @POST("/keyboard/press")
+    @Headers(CONTENT_TYPE_JSON)
+    Call<Void> keyboardPress(@Body Keycode keycode);
+
     // Mouse endpoints.
     @POST("/mouse/move")
     @Headers(CONTENT_TYPE_JSON)

@@ -6,11 +6,15 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 
 import pw.bitset.remotely.R;
 import pw.bitset.remotely.api.DeltaCoordinates;
+import pw.bitset.remotely.api.Keycode;
 import pw.bitset.remotely.api.RemotelyService;
 import pw.bitset.remotely.data.Service;
 import pw.bitset.remotely.trackpad.TrackpadListener;
@@ -66,6 +70,8 @@ public class ControlActivity extends Activity {
     private void setupUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(service.name);
+        toolbar.inflateMenu(R.menu.control_menu);
+        toolbar.getMenu().findItem(R.id.menu_show_keyboard).setOnMenuItemClickListener(new SoftKeyboardListener());
 
         ImageButton buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
         ImageButton buttonVolumeUp = (ImageButton) findViewById(R.id.btn_volume_up);
@@ -128,6 +134,59 @@ public class ControlActivity extends Activity {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(NUDGE_DURATION_MS);
+        }
+    }
+
+    private class SoftKeyboardListener implements View.OnKeyListener, MenuItem.OnMenuItemClickListener {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            showKeyboard();
+            return true;
+        }
+
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event.getAction() != KeyEvent.ACTION_UP) {
+                return false;
+            }
+
+            // The keycode we receive is an internal android representation of the keycode, *not*
+            // the ASCII equivalent (which might not even exist).
+            int finalKeyCode;
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DEL:
+                    finalKeyCode = '\b';
+                    break;
+                case KeyEvent.KEYCODE_TAB:
+                    finalKeyCode = '\t';
+                    break;
+                case KeyEvent.KEYCODE_ENTER:
+                    finalKeyCode = '\n';
+                    break;
+                default:
+                    finalKeyCode = event.getUnicodeChar(event.getMetaState());
+                    break;
+            }
+
+            if (keyCode <= 0 || keyCode > 255) {
+                return false;
+            }
+
+            api.keyboardPress(new Keycode(finalKeyCode)).enqueue(FIRE_AND_FORGET_REQUEST);
+
+            return true;
+        }
+
+        private void showKeyboard() {
+            View rootView = findViewById(R.id.root);
+            rootView.setFocusable(true);
+            rootView.setFocusableInTouchMode(true);
+
+            InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            rootView.requestFocus();
+            im.showSoftInput(rootView, InputMethodManager.SHOW_IMPLICIT);
+
+            rootView.setOnKeyListener(this);
         }
     }
 
