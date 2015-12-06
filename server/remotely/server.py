@@ -7,6 +7,7 @@ from flask import Flask
 from flask.ext.restful import Api
 from zeroconf import ServiceInfo, Zeroconf
 
+from remotely.commands import Keyboard
 from remotely.commands import Media
 from remotely.commands import Mouse
 
@@ -19,6 +20,7 @@ app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(Media, "/media/<command>")
+api.add_resource(Keyboard, "/keyboard/<key>")
 api.add_resource(Mouse, "/mouse/<command>")
 
 

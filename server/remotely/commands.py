@@ -42,6 +42,12 @@ class Media(BaseCommandResource):
         self.control.keypress("XF86AudioMute")
 
 
+class Keyboard(BaseCommandResource):
+    @accept_json_only
+    def post(self, key):
+        self.control.keypress(key)
+
+
 class Mouse(BaseCommandResource):
     @accept_json_only
     def post(self, command):
