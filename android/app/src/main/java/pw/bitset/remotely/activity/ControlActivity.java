@@ -2,31 +2,23 @@ package pw.bitset.remotely.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Vibrator;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 import pw.bitset.remotely.R;
+import pw.bitset.remotely.api.DeltaCoordinates;
+import pw.bitset.remotely.api.RemotelyService;
 import pw.bitset.remotely.data.Service;
 import pw.bitset.remotely.trackpad.TrackpadListener;
 import pw.bitset.remotely.trackpad.TrackpadView;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class ControlActivity extends Activity {
     private static final String TAG = "ControlActivity";
@@ -35,16 +27,17 @@ public class ControlActivity extends Activity {
 
     private static final long NUDGE_DURATION_MS = 40;
 
-    private Executor threadExecutor = Executors.newSingleThreadExecutor();
-
     private Service service;
+    private RemotelyService api;
 
-    private View.OnClickListener commandClickListener = new View.OnClickListener() {
+    private static final Callback<Void> FIRE_AND_FORGET_REQUEST = new Callback<Void>() {
         @Override
-        public void onClick(View v) {
-            final String command = (String) v.getTag(R.integer.key_command);
-            sendCommand(command);
-            nudge();
+        public void onResponse(Response<Void> response, Retrofit retrofit) {
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+            Log.e(TAG, "Coudln't complete request.", t);
         }
     };
 
@@ -61,6 +54,16 @@ public class ControlActivity extends Activity {
             return;
         }
 
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(String.format("http://%s:%d", service.host, service.port))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        api = retrofit.create(RemotelyService.class);
+
+        setupUI();
+    }
+
+    private void setupUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(service.name);
 
@@ -70,75 +73,48 @@ public class ControlActivity extends Activity {
         ImageButton buttonPlay = (ImageButton) findViewById(R.id.btn_volume_play);
         ImageButton buttonPause = (ImageButton) findViewById(R.id.btn_volume_pause);
 
-        buttonVolumeDown.setTag(R.integer.key_command, "vol_down");
-        buttonVolumeUp.setTag(R.integer.key_command, "vol_up");
-        buttonVolumeMute.setTag(R.integer.key_command, "vol_mute");
-        buttonPlay.setTag(R.integer.key_command, "mm_play");
-        buttonPause.setTag(R.integer.key_command, "mm_pause");
-
-        buttonVolumeDown.setOnClickListener(commandClickListener);
-        buttonVolumeUp.setOnClickListener(commandClickListener);
-        buttonVolumeMute.setOnClickListener(commandClickListener);
-        buttonPlay.setOnClickListener(commandClickListener);
-        buttonPause.setOnClickListener(commandClickListener);
+        buttonVolumeDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                api.mediaVolumeDown().enqueue(FIRE_AND_FORGET_REQUEST);
+            }
+        });
+        buttonVolumeUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                api.mediaVolumeUp().enqueue(FIRE_AND_FORGET_REQUEST);
+            }
+        });
+        buttonVolumeMute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                api.mediaVolumeMute().enqueue(FIRE_AND_FORGET_REQUEST);
+            }
+        });
+        buttonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                api.mediaPlay().enqueue(FIRE_AND_FORGET_REQUEST);
+            }
+        });
+        buttonPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                api.mediaPause().enqueue(FIRE_AND_FORGET_REQUEST);
+            }
+        });
 
         TrackpadView trackpadView = (TrackpadView) findViewById(R.id.trackpad);
         trackpadView.addListener(new TrackpadListener() {
             @Override
             public void onMove(int deltaX, int deltaY) {
-                Map<String, Integer> arguments = new HashMap<>();
-                arguments.put("x", deltaX);
-                arguments.put("y", deltaY);
-                sendCommand("mouse_move", arguments);
+                api.mouseMove(new DeltaCoordinates(deltaX, deltaY)).enqueue(FIRE_AND_FORGET_REQUEST);
             }
 
             @Override
             public void onClick() {
-                sendCommand("mouse_click");
+                api.mouseClickLeft().enqueue(FIRE_AND_FORGET_REQUEST);
                 nudge();
-            }
-        });
-    }
-
-    @WorkerThread
-    private void sendData(String host, int port, String data) throws IOException {
-        Log.v(TAG, "Sending " + data);
-
-        DatagramSocket client_socket = new DatagramSocket(port);
-        InetAddress IPAddress =  InetAddress.getByName(host);
-
-        DatagramPacket send_packet = new DatagramPacket(data.getBytes(), data.length(), IPAddress, port);
-        client_socket.send(send_packet);
-        client_socket.close();
-    }
-
-    private void sendCommand(String commandName) {
-        sendCommand(commandName, null);
-    }
-
-    private void sendCommand(String commandName, @Nullable Map<String, ? extends Object> arguments) {
-        final JSONObject obj = new JSONObject();
-        try {
-            obj.put("name", commandName);
-
-            if (arguments != null) {
-                for (Map.Entry<String, ?> argument : arguments.entrySet()) {
-                    obj.put(argument.getKey(), argument.getValue());
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        threadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sendData(service.host, service.port, obj.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         });
     }
