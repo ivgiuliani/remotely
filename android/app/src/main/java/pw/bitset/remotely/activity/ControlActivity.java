@@ -3,6 +3,7 @@ package pw.bitset.remotely.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,11 +18,15 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import pw.bitset.remotely.R;
 import pw.bitset.remotely.data.Service;
+import pw.bitset.remotely.trackpad.TrackpadListener;
+import pw.bitset.remotely.trackpad.TrackpadView;
 
 public class ControlActivity extends Activity {
     private static final String TAG = "ControlActivity";
@@ -31,12 +36,6 @@ public class ControlActivity extends Activity {
     private static final long NUDGE_DURATION_MS = 40;
 
     private Executor threadExecutor = Executors.newSingleThreadExecutor();
-
-    private ImageButton buttonVolumeDown;
-    private ImageButton buttonVolumeUp;
-    private ImageButton buttonVolumeMute;
-    private ImageButton buttonPlay;
-    private ImageButton buttonPause;
 
     private Service service;
 
@@ -65,11 +64,11 @@ public class ControlActivity extends Activity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(service.name);
 
-        buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
-        buttonVolumeUp = (ImageButton) findViewById(R.id.btn_volume_up);
-        buttonVolumeMute = (ImageButton) findViewById(R.id.btn_volume_mute);
-        buttonPlay = (ImageButton) findViewById(R.id.btn_volume_play);
-        buttonPause = (ImageButton) findViewById(R.id.btn_volume_pause);
+        ImageButton buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
+        ImageButton buttonVolumeUp = (ImageButton) findViewById(R.id.btn_volume_up);
+        ImageButton buttonVolumeMute = (ImageButton) findViewById(R.id.btn_volume_mute);
+        ImageButton buttonPlay = (ImageButton) findViewById(R.id.btn_volume_play);
+        ImageButton buttonPause = (ImageButton) findViewById(R.id.btn_volume_pause);
 
         buttonVolumeDown.setTag(R.integer.key_command, "vol_down");
         buttonVolumeUp.setTag(R.integer.key_command, "vol_up");
@@ -82,6 +81,23 @@ public class ControlActivity extends Activity {
         buttonVolumeMute.setOnClickListener(commandClickListener);
         buttonPlay.setOnClickListener(commandClickListener);
         buttonPause.setOnClickListener(commandClickListener);
+
+        TrackpadView trackpadView = (TrackpadView) findViewById(R.id.trackpad);
+        trackpadView.addListener(new TrackpadListener() {
+            @Override
+            public void onMove(int deltaX, int deltaY) {
+                Map<String, Integer> arguments = new HashMap<>();
+                arguments.put("x", deltaX);
+                arguments.put("y", deltaY);
+                sendCommand("mouse_move", arguments);
+            }
+
+            @Override
+            public void onClick() {
+                sendCommand("mouse_click");
+                nudge();
+            }
+        });
     }
 
     @WorkerThread
@@ -97,9 +113,19 @@ public class ControlActivity extends Activity {
     }
 
     private void sendCommand(String commandName) {
+        sendCommand(commandName, null);
+    }
+
+    private void sendCommand(String commandName, @Nullable Map<String, ? extends Object> arguments) {
         final JSONObject obj = new JSONObject();
         try {
             obj.put("name", commandName);
+
+            if (arguments != null) {
+                for (Map.Entry<String, ?> argument : arguments.entrySet()) {
+                    obj.put(argument.getKey(), argument.getValue());
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return;

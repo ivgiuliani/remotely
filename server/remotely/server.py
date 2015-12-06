@@ -83,6 +83,10 @@ class RemotelyServer(object):
             self.control.keypress("XF86AudioPlay")
         elif command["name"] == "mm_pause":
             self.control.keypress("XF86AudioPause")
+        elif command["name"] == "mouse_move":
+            self.control.mouse_move(int(command["x"]), int(command["y"]))
+        elif command["name"] == "mouse_click":
+            self.control.mouse_click()
 
 
 def zeroconf_register(zc, ip, port):
