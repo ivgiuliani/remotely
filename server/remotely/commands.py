@@ -58,12 +58,12 @@ class Mouse(BaseCommandResource):
 
     def command_mouse_move(self):
         argparser = reqparse.RequestParser()
-        argparser.add_argument("x", type=int, required=True)
-        argparser.add_argument("y", type=int, required=True)
+        argparser.add_argument("delta_x", type=int, required=True)
+        argparser.add_argument("delta_y", type=int, required=True)
 
         args = argparser.parse_args()
 
-        self.control.mouse_move(args.x, args.y)
+        self.control.mouse_move(args.delta_x, args.delta_y)
 
     def command_click_left(self):
         self.control.mouse_click()

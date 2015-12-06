@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import socket
 
@@ -49,8 +50,9 @@ def main(args):
     except IndexError:
         port = DEFAULT_SERVER_PORT
 
-    zeroconf = Zeroconf()
-    zc_info = zeroconf_register(zeroconf, ip, port)
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        zeroconf = Zeroconf()
+        zc_info = zeroconf_register(zeroconf, ip, port)
 
     try:
         app.run(host=DEFAULT_SERVER_IFACE, port=DEFAULT_SERVER_PORT, debug=True)
