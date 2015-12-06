@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 
@@ -49,6 +51,18 @@ public class ControlActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
+
+        // Postpone the transition until the window's decor view has finished its layout.
+        postponeEnterTransition();
+        final View decor = getWindow().getDecorView();
+        decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                decor.getViewTreeObserver().removeOnPreDrawListener(this);
+                startPostponedEnterTransition();
+                return true;
+            }
+        });
 
         Intent intent = getIntent();
         service = intent.getParcelableExtra(INTENT_KEY_SERVICE);
@@ -186,9 +200,9 @@ public class ControlActivity extends Activity {
         }
     }
 
-    static void show(Activity parentActivity, Service service) {
+    static void show(Activity parentActivity, Service service, @Nullable Bundle transitionOptions) {
         Intent intent = new Intent(parentActivity, ControlActivity.class);
         intent.putExtra(INTENT_KEY_SERVICE, service);
-        parentActivity.startActivity(intent);
+        parentActivity.startActivity(intent, transitionOptions);
     }
 }
