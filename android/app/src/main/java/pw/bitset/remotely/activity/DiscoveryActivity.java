@@ -60,6 +60,7 @@ public class DiscoveryActivity extends Activity {
 
         ListView hostList = (ListView) findViewById(R.id.lst_hosts);
         hostList.setAdapter(hostListAdapter);
+        hostList.setEmptyView(findViewById(R.id.lst_empty));
         hostList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

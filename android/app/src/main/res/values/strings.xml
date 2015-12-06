@@ -3,6 +3,8 @@
 
     <string name="activity_discovery_title">Available devices</string>
 
+    <string name="discovery_nothing">Searching for available devices…</string>
+
     <string name="button_vol_up">Volume up</string>
     <string name="button_vol_down">Volume down</string>
     <string name="button_vol_mute">Mute</string>

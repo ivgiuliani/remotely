@@ -27,6 +27,37 @@
         android:id="@+id/lst_hosts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="true" />
+        android:clipToPadding="true"
+        tools:listitem="@layout/vh_device_view" />
+
+    <LinearLayout
+        android:id="@+id/lst_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_soft_warning_big"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/discovery_nothing"
+            android:textSize="20sp"
+            android:textColor="@color/textSecondary"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>
