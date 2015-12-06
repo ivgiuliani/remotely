@@ -77,30 +77,35 @@ public class ControlActivity extends Activity {
             @Override
             public void onClick(View v) {
                 api.mediaVolumeDown().enqueue(FIRE_AND_FORGET_REQUEST);
+                nudge();
             }
         });
         buttonVolumeUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 api.mediaVolumeUp().enqueue(FIRE_AND_FORGET_REQUEST);
+                nudge();
             }
         });
         buttonVolumeMute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 api.mediaVolumeMute().enqueue(FIRE_AND_FORGET_REQUEST);
+                nudge();
             }
         });
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 api.mediaPlay().enqueue(FIRE_AND_FORGET_REQUEST);
+                nudge();
             }
         });
         buttonPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 api.mediaPause().enqueue(FIRE_AND_FORGET_REQUEST);
+                nudge();
             }
         });
 
