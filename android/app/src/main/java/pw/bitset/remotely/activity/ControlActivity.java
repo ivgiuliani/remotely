@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 
 import pw.bitset.remotely.R;
+import pw.bitset.remotely.api.Api;
 import pw.bitset.remotely.api.DeltaCoordinates;
 import pw.bitset.remotely.api.Keycode;
 import pw.bitset.remotely.api.RemotelyService;
@@ -20,7 +21,6 @@ import pw.bitset.remotely.data.Service;
 import pw.bitset.remotely.trackpad.TrackpadListener;
 import pw.bitset.remotely.trackpad.TrackpadView;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -58,11 +58,7 @@ public class ControlActivity extends Activity {
             return;
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(String.format("http://%s:%d", service.host, service.port))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        api = retrofit.create(RemotelyService.class);
+        api = Api.get(service);
 
         setupUI();
     }
