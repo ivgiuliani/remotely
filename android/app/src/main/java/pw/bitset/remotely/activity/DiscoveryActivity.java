@@ -83,7 +83,7 @@ public class DiscoveryActivity extends Activity {
                 Pair[] pairs = new Pair[] {
                         Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME),
                         Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME),
-                        Pair.create(toolbar, "toolbar")
+                        Pair.create(toolbar, toolbar.getTransitionName())
                 };
 
                 //noinspection unchecked
