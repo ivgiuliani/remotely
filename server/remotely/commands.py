@@ -87,3 +87,21 @@ class Mouse(BaseCommandResource):
     def command_click_left(self):
         self.control.mouse_click()
 
+
+class Meta(BaseCommandResource):
+    @accept_json_only
+    def get(self, command):
+        command_map = {
+            "ping": self.ping,
+        }
+
+        if command not in command_map:
+            abort(404)
+            return
+
+        return command_map[command]()
+
+    def ping(self):
+        return {
+            "pong": True
+        }

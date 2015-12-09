@@ -9,6 +9,7 @@ from zeroconf import ServiceInfo, Zeroconf
 
 from remotely.commands import Keyboard
 from remotely.commands import Media
+from remotely.commands import Meta
 from remotely.commands import Mouse
 
 DEFAULT_SERVER_IFACE = "0.0.0.0"
@@ -22,6 +23,7 @@ api = Api(app)
 api.add_resource(Media, "/media/<command>")
 api.add_resource(Keyboard, "/keyboard/press")
 api.add_resource(Mouse, "/mouse/<command>")
+api.add_resource(Meta, "/_meta/<command>")
 
 
 def zeroconf_register(zc, ip, port):
