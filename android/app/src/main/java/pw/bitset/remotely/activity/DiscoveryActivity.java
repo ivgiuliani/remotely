@@ -9,6 +9,7 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,7 +26,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import pw.bitset.remotely.R;
+import pw.bitset.remotely.api.Api;
+import pw.bitset.remotely.api.Pong;
 import pw.bitset.remotely.data.Service;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class DiscoveryActivity extends Activity {
     private static final String TAG = "DiscoveryActivity";
@@ -107,13 +114,13 @@ public class DiscoveryActivity extends Activity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, @Nullable View convertView, ViewGroup parent) {
             return createViewFromResource(inflater, position, convertView, parent, resource);
         }
 
         private View createViewFromResource(LayoutInflater inflater,
                                             int position,
-                                            View convertView,
+                                            @Nullable View convertView,
                                             ViewGroup parent,
                                             @LayoutRes int resource) {
             View view;
@@ -125,11 +132,26 @@ public class DiscoveryActivity extends Activity {
                 view = convertView;
             }
 
-            TextView header = (TextView) view.findViewById(R.id.txt_header);
-            TextView sub = (TextView) view.findViewById(R.id.txt_sub);
+            final TextView header = (TextView) view.findViewById(R.id.txt_header);
+            final TextView sub = (TextView) view.findViewById(R.id.txt_sub);
+            final ImageView ok = (ImageView) view.findViewById(R.id.img_ok);
 
             header.setText(service.name);
             sub.setText(String.format("%s:%d", service.host, service.port));
+
+            Api.get(service).ping().enqueue(new Callback<Pong>() {
+                @Override
+                public void onResponse(Response<Pong> response, Retrofit retrofit) {
+                    if (response.isSuccess() && response.body().pong) {
+                        ok.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // Do nothing, most likely this is just another http server.
+                }
+            });
 
             return view;
         }

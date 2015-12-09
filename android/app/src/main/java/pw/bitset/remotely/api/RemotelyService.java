@@ -2,6 +2,7 @@ package pw.bitset.remotely.api;
 
 import retrofit.Call;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.Headers;
 import retrofit.http.POST;
 
@@ -42,4 +43,9 @@ public interface RemotelyService {
     @POST("/mouse/click_left")
     @Headers(CONTENT_TYPE_JSON)
     Call<Void> mouseClickLeft();
+
+    // _meta endpoints.
+    @GET("/_meta/ping")
+    @Headers(CONTENT_TYPE_JSON)
+    Call<Pong> ping();
 }
