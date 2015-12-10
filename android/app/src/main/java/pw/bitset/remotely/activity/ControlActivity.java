@@ -3,14 +3,12 @@ package pw.bitset.remotely.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 
@@ -22,47 +20,21 @@ import pw.bitset.remotely.api.RemotelyService;
 import pw.bitset.remotely.data.Service;
 import pw.bitset.remotely.trackpad.TrackpadListener;
 import pw.bitset.remotely.trackpad.TrackpadView;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
 
-public class ControlActivity extends Activity {
+public class ControlActivity extends BaseActivity {
     private static final String TAG = "ControlActivity";
 
     private static final String INTENT_KEY_SERVICE = "intent_key_service";
 
-    private static final long NUDGE_DURATION_MS = 40;
-
     private Service service;
     private RemotelyService api;
 
-    private static final Callback<Void> FIRE_AND_FORGET_REQUEST = new Callback<Void>() {
-        @Override
-        public void onResponse(Response<Void> response, Retrofit retrofit) {
-        }
-
-        @Override
-        public void onFailure(Throwable t) {
-            Log.e(TAG, "Coudln't complete request.", t);
-        }
-    };
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
-        // Postpone the transition until the window's decor view has finished its layout.
-        postponeEnterTransition();
-        final View decor = getWindow().getDecorView();
-        decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                decor.getViewTreeObserver().removeOnPreDrawListener(this);
-                startPostponedEnterTransition();
-                return true;
-            }
-        });
+        postponeActivityTransitions();
 
         Intent intent = getIntent();
         service = intent.getParcelableExtra(INTENT_KEY_SERVICE);
@@ -92,35 +64,35 @@ public class ControlActivity extends Activity {
         buttonVolumeDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaVolumeDown().enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mediaVolumeDown().enqueue(newFireAndForgetRequest());
                 nudge();
             }
         });
         buttonVolumeUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaVolumeUp().enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mediaVolumeUp().enqueue(newFireAndForgetRequest());
                 nudge();
             }
         });
         buttonVolumeMute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaVolumeMute().enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mediaVolumeMute().enqueue(newFireAndForgetRequest());
                 nudge();
             }
         });
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaPlay().enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mediaPlay().enqueue(newFireAndForgetRequest());
                 nudge();
             }
         });
         buttonPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaPause().enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mediaPause().enqueue(newFireAndForgetRequest());
                 nudge();
             }
         });
@@ -129,22 +101,15 @@ public class ControlActivity extends Activity {
         trackpadView.addListener(new TrackpadListener() {
             @Override
             public void onMove(int deltaX, int deltaY) {
-                api.mouseMove(new DeltaCoordinates(deltaX, deltaY)).enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mouseMove(new DeltaCoordinates(deltaX, deltaY)).enqueue(newFireAndForgetRequest());
             }
 
             @Override
             public void onClick() {
-                api.mouseClickLeft().enqueue(FIRE_AND_FORGET_REQUEST);
+                api.mouseClickLeft().enqueue(newFireAndForgetRequest());
                 nudge();
             }
         });
-    }
-
-    private void nudge() {
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        if (vibrator.hasVibrator()) {
-            vibrator.vibrate(NUDGE_DURATION_MS);
-        }
     }
 
     private class SoftKeyboardListener implements View.OnKeyListener, MenuItem.OnMenuItemClickListener {
@@ -182,7 +147,7 @@ public class ControlActivity extends Activity {
                 return false;
             }
 
-            api.keyboardPress(new Keycode(finalKeyCode)).enqueue(FIRE_AND_FORGET_REQUEST);
+            api.keyboardPress(new Keycode(finalKeyCode)).enqueue(newFireAndForgetRequest());
 
             return true;
         }

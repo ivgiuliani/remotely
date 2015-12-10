@@ -1,6 +1,5 @@
 package pw.bitset.remotely.activity;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,7 +35,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class DiscoveryActivity extends Activity {
+public class DiscoveryActivity extends BaseActivity {
     private static final String TAG = "DiscoveryActivity";
 
     private static final String ZEROCONF_SERVICE_TYPE = "_http._tcp.";
