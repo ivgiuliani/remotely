@@ -1,6 +1,6 @@
 package pw.bitset.remotely.activity;
 
-import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -33,7 +35,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class DiscoveryActivity extends Activity {
+public class DiscoveryActivity extends BaseActivity {
     private static final String TAG = "DiscoveryActivity";
 
     private static final String ZEROCONF_SERVICE_TYPE = "_http._tcp.";
@@ -72,7 +74,23 @@ public class DiscoveryActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Service service = hostListAdapter.getItem(position);
-                ControlActivity.show(DiscoveryActivity.this, service);
+
+                View statusBar = findViewById(android.R.id.statusBarBackground);
+                View navigationBar = findViewById(android.R.id.navigationBarBackground);
+                View toolbar = findViewById(R.id.toolbar);
+
+                Pair[] pairs = new Pair[] {
+                        Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME),
+                        Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME),
+                        Pair.create(toolbar, toolbar.getTransitionName())
+                };
+
+                //noinspection unchecked
+                Bundle transitionBundle = ActivityOptions
+                        .makeSceneTransitionAnimation(DiscoveryActivity.this, pairs)
+                        .toBundle();
+
+                ControlActivity.show(DiscoveryActivity.this, service, transitionBundle);
             }
         });
 
