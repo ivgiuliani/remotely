@@ -4,10 +4,12 @@
     <color name="colorPrimaryDark">#324878</color>
     <color name="colorAccent">#ff7563</color>
 
+    <color name="dark">#414754</color>
+    <color name="buttonTint">@color/dark</color>
+    <color name="trackpadBackground">@color/dark</color>
+
     <color name="textPrimary">#303030</color>
     <color name="textSecondary">#808080</color>
-
-    <color name="trackpadBackground">#414754</color>
 
     <color name="toolbarTextColor">@color/colorAccent</color>
 </resources>
