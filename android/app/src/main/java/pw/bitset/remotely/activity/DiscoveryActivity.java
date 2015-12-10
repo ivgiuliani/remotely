@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -53,7 +55,7 @@ public class DiscoveryActivity extends BaseActivity {
     private BroadcastReceiver hostEventReceiver;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_discovery);
@@ -162,6 +164,8 @@ public class DiscoveryActivity extends BaseActivity {
                 public void onResponse(Response<Pong> response, Retrofit retrofit) {
                     if (response.isSuccess() && response.body().pong) {
                         ok.setVisibility(View.VISIBLE);
+                        Animation fadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+                        ok.startAnimation(fadeInAnimation);
                     }
                 }
 
