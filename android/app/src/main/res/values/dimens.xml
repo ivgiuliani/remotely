@@ -3,5 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="control_button_size">52dp</dimen>
+    <dimen name="control_button_size">46dp</dimen>
 </resources>
