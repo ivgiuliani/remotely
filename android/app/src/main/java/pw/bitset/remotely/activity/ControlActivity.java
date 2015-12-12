@@ -72,37 +72,31 @@ public class ControlActivity extends BaseActivity {
         toolbar.inflateMenu(R.menu.control_menu);
         toolbar.getMenu().findItem(R.id.menu_show_keyboard).setOnMenuItemClickListener(new SoftKeyboardListener());
 
-        ImageButton buttonVolumeDown = (ImageButton) findViewById(R.id.btn_volume_down);
-        ImageButton buttonVolumeUp = (ImageButton) findViewById(R.id.btn_volume_up);
-        ImageButton buttonVolumeMute = (ImageButton) findViewById(R.id.btn_volume_mute);
-        ImageButton buttonPlay = (ImageButton) findViewById(R.id.btn_volume_play);
-        ImageButton buttonPause = (ImageButton) findViewById(R.id.btn_volume_pause);
-
-        buttonVolumeDown.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_volume_down).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performVolumeDown();
             }
         });
-        buttonVolumeUp.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_volume_up).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performVolumeUp();
             }
         });
-        buttonVolumeMute.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_volume_mute).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performVolumeMute();
             }
         });
-        buttonPlay.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_volume_play).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performPlay();
             }
         });
-        buttonPause.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_volume_pause).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performPause();
