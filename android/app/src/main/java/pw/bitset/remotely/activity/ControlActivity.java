@@ -49,6 +49,23 @@ public class ControlActivity extends BaseActivity {
         setupUI();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                performVolumeUp();
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                performVolumeDown();
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_MUTE:
+                performVolumeMute();
+                return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
     private void setupUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(service.name);
@@ -64,36 +81,31 @@ public class ControlActivity extends BaseActivity {
         buttonVolumeDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaVolumeDown().enqueue(newFireAndForgetRequest());
-                nudge();
+                performVolumeDown();
             }
         });
         buttonVolumeUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaVolumeUp().enqueue(newFireAndForgetRequest());
-                nudge();
+                performVolumeUp();
             }
         });
         buttonVolumeMute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaVolumeMute().enqueue(newFireAndForgetRequest());
-                nudge();
+                performVolumeMute();
             }
         });
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaPlay().enqueue(newFireAndForgetRequest());
-                nudge();
+                performPlay();
             }
         });
         buttonPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                api.mediaPause().enqueue(newFireAndForgetRequest());
-                nudge();
+                performPause();
             }
         });
 
@@ -110,6 +122,31 @@ public class ControlActivity extends BaseActivity {
                 nudge();
             }
         });
+    }
+
+    private void performVolumeDown() {
+        api.mediaVolumeDown().enqueue(newFireAndForgetRequest());
+        nudge();
+    }
+
+    private void performVolumeUp() {
+        api.mediaVolumeUp().enqueue(newFireAndForgetRequest());
+        nudge();
+    }
+
+    private void performVolumeMute() {
+        api.mediaVolumeMute().enqueue(newFireAndForgetRequest());
+        nudge();
+    }
+
+    private void performPlay() {
+        api.mediaPlay().enqueue(newFireAndForgetRequest());
+        nudge();
+    }
+
+    private void performPause() {
+        api.mediaPause().enqueue(newFireAndForgetRequest());
+        nudge();
     }
 
     private class SoftKeyboardListener implements View.OnKeyListener, MenuItem.OnMenuItemClickListener {
