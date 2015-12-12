@@ -30,7 +30,7 @@ import retrofit.Retrofit;
 
             @Override
             public void onFailure(Throwable t) {
-                Log.e(TAG, "Coudln't complete request.", t);
+                Log.e(TAG, "Couldn't complete request.", t);
             }
         };
     }
