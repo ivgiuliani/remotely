@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A drawable for the toolbar's background that allows two states:
+     - the default state, with the default background color (colorPrimary)
+     - the error state, with the error background color.
+     If you wish to transition towards an error state, just get the background
+     of the toolbar (toolbar.getBackground()), cast it to a TransitionDrawable
+     and call `.startTransition()` (or `.reverseTransition()` to switch back to the
+     default state).
+-->
+<transition xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/colorPrimary" />
+    <item android:drawable="@color/error" />
+</transition>
