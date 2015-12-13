@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@drawable/toolbar_background"
             android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar" />
 
     </android.support.design.widget.AppBarLayout>

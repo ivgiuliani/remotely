@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -11,22 +12,32 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import pw.bitset.remotely.R;
 import pw.bitset.remotely.api.Api;
 import pw.bitset.remotely.api.DeltaCoordinates;
 import pw.bitset.remotely.api.Keycode;
+import pw.bitset.remotely.api.Pong;
 import pw.bitset.remotely.api.RemotelyService;
 import pw.bitset.remotely.data.Service;
 import pw.bitset.remotely.trackpad.TrackpadListener;
 import pw.bitset.remotely.trackpad.TrackpadView;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class ControlActivity extends BaseActivity {
     private static final String TAG = "ControlActivity";
 
+    private static final int PING_DELAY = 10;
     private static final String INTENT_KEY_SERVICE = "intent_key_service";
 
     private Service service;
     private RemotelyService api;
+    private ScheduledExecutorService pingExecutor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +57,25 @@ public class ControlActivity extends BaseActivity {
         api = Api.get(service);
 
         setupUI();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        pingExecutor = Executors.newSingleThreadScheduledExecutor();
+        pingExecutor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                performPing();
+            }
+        }, PING_DELAY, PING_DELAY, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pingExecutor.shutdown();
     }
 
     @Override
@@ -140,6 +170,22 @@ public class ControlActivity extends BaseActivity {
     private void performPause() {
         api.mediaPause().enqueue(newFireAndForgetRequest());
         nudge();
+    }
+
+    @WorkerThread
+    private void performPing() {
+        Log.v(TAG, "Pinging server.");
+        api.ping().enqueue(new Callback<Pong>() {
+            @Override
+            public void onResponse(Response<Pong> response, Retrofit retrofit) {
+                stopFailMode();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                startFailMode(R.string.error_cant_reach_server);
+            }
+        });
     }
 
     private class SoftKeyboardListener implements View.OnKeyListener, MenuItem.OnMenuItemClickListener {
