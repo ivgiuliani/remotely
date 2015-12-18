@@ -9,5 +9,5 @@
 -->
 <transition xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/colorPrimary" />
-    <item android:drawable="@color/error" />
+    <item android:drawable="@color/errorPrimary" />
 </transition>

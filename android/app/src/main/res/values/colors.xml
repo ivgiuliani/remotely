@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#324878</color>
     <color name="colorAccent">#ff7563</color>
 
-    <color name="error">#ff5a5d</color>
+    <color name="errorPrimary">#ff5a5d</color>
+    <color name="errorPrimaryDark">#df3e41</color>
 
     <color name="dark">#414754</color>
     <color name="buttonTint">@color/dark</color>
