@@ -1,3 +1,3 @@
 <resources>
-    <string name="error_cant_reach_server">Can\'t reach the server</string>
+    <string name="error_cant_reach_server">Controlled device cannot be reached.</string>
 </resources>
