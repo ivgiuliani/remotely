@@ -78,6 +78,12 @@ public class TrackpadView extends View {
         }
     }
 
+    private void notifyDoubleClick() {
+        for (TrackpadListener listener : listeners) {
+            listener.onDoubleClick();
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         gestureDetector.onTouchEvent(event);
@@ -135,8 +141,14 @@ public class TrackpadView extends View {
         }
 
         @Override
-        public boolean onSingleTapUp(MotionEvent e) {
+        public boolean onSingleTapConfirmed(MotionEvent e) {
             notifyClick();
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            notifyDoubleClick();
             return true;
         }
 

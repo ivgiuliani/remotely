@@ -156,6 +156,12 @@ public class ControlActivity extends BaseActivity {
                 api.mouseClickLeft().enqueue(newFireAndForgetRequest());
                 nudge();
             }
+
+            @Override
+            public void onDoubleClick() {
+                api.mouseDoubleClickLeft().enqueue(newFireAndForgetRequest());
+                nudge();
+            }
         });
     }
 
