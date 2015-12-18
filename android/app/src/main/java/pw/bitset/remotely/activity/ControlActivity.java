@@ -30,6 +30,17 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+/**
+ * Main control activity.
+ *
+ * Handles UI interaction and dispatches control events to the server. Every control activity
+ * is tied to a specific service, which must be passed as an intent argument.
+ *
+ * An helper method for launching the activity is provided by {@link #show(Activity, Service, Bundle)}
+ * that will create the correct intent for the activity.
+ *
+ * Multiple control activity may coexist at runtime and command different services.
+ */
 public class ControlActivity extends BaseActivity {
     private static final String TAG = "ControlActivity";
 
@@ -254,6 +265,7 @@ public class ControlActivity extends BaseActivity {
     static void show(Activity parentActivity, Service service, @Nullable Bundle transitionOptions) {
         Intent intent = new Intent(parentActivity, ControlActivity.class);
         intent.putExtra(INTENT_KEY_SERVICE, service);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         parentActivity.startActivity(intent, transitionOptions);
     }
 }
