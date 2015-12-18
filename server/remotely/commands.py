@@ -67,6 +67,7 @@ class Mouse(BaseCommandResource):
         command_map = {
             "move": self.command_mouse_move,
             "click_left": self.command_click_left,
+            "double_click_left": self.command_double_click_left,
         }
 
         if command not in command_map:
@@ -86,6 +87,9 @@ class Mouse(BaseCommandResource):
 
     def command_click_left(self):
         self.control.mouse_click()
+
+    def command_double_click_left(self):
+        self.control.mouse_double_click()
 
 
 class Meta(BaseCommandResource):
