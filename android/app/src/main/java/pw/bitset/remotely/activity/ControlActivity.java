@@ -3,6 +3,7 @@ package pw.bitset.remotely.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.support.v7.widget.Toolbar;
@@ -101,33 +102,33 @@ public class ControlActivity extends BaseActivity {
         toolbar.inflateMenu(R.menu.control_menu);
         toolbar.getMenu().findItem(R.id.menu_show_keyboard).setOnMenuItemClickListener(new SoftKeyboardListener());
 
-        findViewById(R.id.btn_volume_down).setOnClickListener(new View.OnClickListener() {
+        setupButton(R.id.btn_volume_down, new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 performVolumeDown();
             }
         });
-        findViewById(R.id.btn_volume_up).setOnClickListener(new View.OnClickListener() {
+        setupButton(R.id.btn_volume_up, new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 performVolumeUp();
             }
         });
-        findViewById(R.id.btn_volume_mute).setOnClickListener(new View.OnClickListener() {
+        setupButton(R.id.btn_volume_mute, new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 performVolumeMute();
             }
         });
-        findViewById(R.id.btn_volume_play).setOnClickListener(new View.OnClickListener() {
+        setupButton(R.id.btn_volume_play, new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 performPlay();
             }
         });
-        findViewById(R.id.btn_volume_pause).setOnClickListener(new View.OnClickListener() {
+        setupButton(R.id.btn_volume_pause, new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
                 performPause();
             }
         });
@@ -143,6 +144,15 @@ public class ControlActivity extends BaseActivity {
             public void onClick() {
                 api.mouseClickLeft().enqueue(newFireAndForgetRequest());
                 nudge();
+            }
+        });
+    }
+
+    private void setupButton(@IdRes final int button, final Runnable onClick) {
+        findViewById(button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClick.run();
             }
         });
     }
