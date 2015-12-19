@@ -1,3 +1,4 @@
+apply plugin: 'checkstyle'
 apply plugin: 'com.android.application'
 
 android {
@@ -36,6 +37,13 @@ dependencies {
     compile "com.squareup.retrofit:retrofit:${retrofitVersion}"
     compile "com.squareup.retrofit:converter-gson:${retrofitVersion}"
     compile "com.google.code.findbugs:annotations:3.0.0"
+}
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    classpath = files()
 }
 
 // Allow disabling pre dexing if the "-PdisablePreDex" gradle option is supplied, which speeds up
