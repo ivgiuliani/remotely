@@ -1,9 +1,11 @@
 package pw.bitset.remotely.activity;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Vibrator;
+import android.support.annotation.ColorRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringRes;
@@ -74,12 +76,21 @@ import retrofit.Retrofit;
      */
     protected void startFailMode(@StringRes int reason) {
         if (!isFailMode) {
+            @ColorRes final int colorPrimaryDark = getResources().getColor(R.color.colorPrimaryDark);
+            @ColorRes final int colorErrorDark = getResources().getColor(R.color.errorPrimaryDark);
+
             Log.d(TAG, "Entering fail mode.");
             isFailMode = true;
             Toolbar toolbar = (Toolbar) findViewById(getToolbarId());
             toolbar.setSubtitle(reason);
             TransitionDrawable transition = (TransitionDrawable) toolbar.getBackground();
             transition.startTransition(TRANSITION_FAIL_MODE_MS);
+
+            View statusBar = findViewById(android.R.id.statusBarBackground);
+            ObjectAnimator
+                    .ofArgb(statusBar, "backgroundColor", colorPrimaryDark, colorErrorDark)
+                    .setDuration(TRANSITION_FAIL_MODE_MS)
+                    .start();
         }
     }
 
@@ -95,12 +106,21 @@ import retrofit.Retrofit;
      */
     protected void stopFailMode() {
         if (isFailMode) {
+            @ColorRes final int colorPrimaryDark = getResources().getColor(R.color.colorPrimaryDark);
+            @ColorRes final int colorError = getResources().getColor(R.color.errorPrimaryDark);
+
             Log.d(TAG, "Leaving fail mode.");
             isFailMode = false;
             Toolbar toolbar = (Toolbar) findViewById(getToolbarId());
             toolbar.setSubtitle("");
             TransitionDrawable transition = (TransitionDrawable) toolbar.getBackground();
             transition.reverseTransition(TRANSITION_FAIL_MODE_MS);
+
+            View statusBar = findViewById(android.R.id.statusBarBackground);
+            ObjectAnimator
+                    .ofArgb(statusBar, "backgroundColor", colorError, colorPrimaryDark)
+                    .setDuration(TRANSITION_FAIL_MODE_MS)
+                    .start();
         }
     }
 
