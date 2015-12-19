@@ -8,7 +8,7 @@ public class Service implements Parcelable {
     public final String host;
     public final int port;
 
-    public Service(String name,String host, int port) {
+    public Service(String name, String host, int port) {
         this.name = name;
         this.host = host;
         this.port = port;
