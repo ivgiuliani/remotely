@@ -12,5 +12,5 @@ dependencies:
 
 test:
   override:
-    - ./gradlew assembleDebug -PdisablePreDex
+    - ./gradlew checkstyle assembleDebug -PdisablePreDex
 
