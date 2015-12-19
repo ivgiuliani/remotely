@@ -30,3 +30,8 @@ class LinuxControl(object):
         log.debug("Mouse click")
         sequence = "mouseclick 1\n"
         self.__xte(sequence)
+
+    def mouse_double_click(self):
+        log.debug("Mouse double click")
+        sequence = "mouseclick 1\nmouseclick 1\n"
+        self.__xte(sequence)

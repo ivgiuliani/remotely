@@ -44,6 +44,10 @@ public interface RemotelyService {
     @Headers(CONTENT_TYPE_JSON)
     Call<Void> mouseClickLeft();
 
+    @POST("/mouse/double_click_left")
+    @Headers(CONTENT_TYPE_JSON)
+    Call<Void> mouseDoubleClickLeft();
+
     // _meta endpoints.
     @GET("/_meta/ping")
     @Headers(CONTENT_TYPE_JSON)
