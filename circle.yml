@@ -1,6 +1,10 @@
 general:
   build_dir: android
 
+machine:
+  environment:
+    TERM: dumb
+
 dependencies:
   pre:
     - echo y | android update sdk --no-ui --all --filter "tools"
