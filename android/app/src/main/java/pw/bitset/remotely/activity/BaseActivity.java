@@ -22,7 +22,7 @@ import retrofit.Retrofit;
 /**
  * Base activity that provides utility methods common to all the other activities in the app.
  */
- abstract class BaseActivity extends Activity {
+abstract class BaseActivity extends Activity {
     private static final String TAG = "BaseActivity";
     private static final long DEFAULT_NUDGE_DURATION_MS = 40;
     private static final int TRANSITION_FAIL_MODE_MS = 300;
