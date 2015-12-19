@@ -37,3 +37,16 @@ dependencies {
     compile "com.squareup.retrofit:converter-gson:${retrofitVersion}"
     compile "com.google.code.findbugs:annotations:3.0.0"
 }
+
+// Allow disabling pre dexing if the "-PdisablePreDex" gradle option is supplied, which speeds up
+// gradle build times on build servers.
+project.ext.preDexLibs = !project.hasProperty('disablePreDex')
+subprojects {
+    project.plugins.whenPluginAdded { plugin ->
+        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        }
+    }
+}
