@@ -15,4 +15,4 @@ test:
     - ./gradlew checkstyle assembleDebug -PdisablePreDex
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/android
-    - cp app/build/reports/* $CIRCLE_TEST_REPORTS/android/
+    - cp -fr app/build/reports/* $CIRCLE_TEST_REPORTS/android/
