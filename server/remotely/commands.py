@@ -8,6 +8,13 @@ class BaseCommandResource(Resource):
     def __init__(self):
         self.control = SystemControl()
 
+    def dispatch(self, command_map, command):
+        if command not in command_map:
+            abort(404)
+            return
+
+        return command_map[command]()
+
 
 class Media(BaseCommandResource):
     @accept_json_only
@@ -20,11 +27,7 @@ class Media(BaseCommandResource):
             "pause": self.command_pause,
         }
 
-        if command not in command_map:
-            abort(404)
-            return
-
-        return command_map[command]()
+        return self.dispatch(command_map, command)
 
     def command_play(self):
         self.control.keypress("XF86AudioPlay")
@@ -70,11 +73,7 @@ class Mouse(BaseCommandResource):
             "double_click_left": self.command_double_click_left,
         }
 
-        if command not in command_map:
-            abort(404)
-            return
-
-        return command_map[command]()
+        return self.dispatch(command_map, command)
 
     def command_mouse_move(self):
         argparser = reqparse.RequestParser()
@@ -99,11 +98,7 @@ class Meta(BaseCommandResource):
             "ping": self.ping,
         }
 
-        if command not in command_map:
-            abort(404)
-            return
-
-        return command_map[command]()
+        return self.dispatch(command_map, command)
 
     def ping(self):
         return {
