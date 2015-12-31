@@ -87,7 +87,13 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
+
+        <pw.bitset.remotely.extrakeys.ExtraKeysView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center" />
 
     </LinearLayout>
 

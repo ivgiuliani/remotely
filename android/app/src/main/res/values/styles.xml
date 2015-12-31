@@ -21,4 +21,13 @@
         <item name="android:tint">@color/buttonTint</item>
     </style>
 
+    <style name="KeyButton">
+        <item name="android:layout_width">@dimen/control_button_size</item>
+        <item name="android:layout_height">@dimen/control_button_size</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:tint">@color/buttonTint</item>
+    </style>
+
 </resources>

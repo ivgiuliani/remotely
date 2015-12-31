@@ -56,6 +56,8 @@ class Keyboard(BaseCommandResource):
 
         # There's probably no harm in adding all those supported.
         charmap = {
+            '.': "period",
+            '/': "slash",
             '\x08': "BackSpace",
             '\t': "Tab",
             '\n': "Return"
