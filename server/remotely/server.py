@@ -4,7 +4,7 @@ import sys
 import socket
 
 from flask import Flask
-from flask.ext.restful import Api
+from flask_restful import Api
 from zeroconf import ServiceInfo, Zeroconf
 
 from remotely.commands import Keyboard
